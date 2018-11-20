@@ -72,7 +72,7 @@ class BatchProcess(threading.Thread):
         url_update_date = DateHandler.parse_datetime(datetime=url[1])
 
         if post_update_date > url_update_date:
-            message = "[" + user[7] + "] <a href='" + post.link + \
+            message = "Er is een nieuw artikel op de website! <a href='" + post.link + \
                 "'>" + post.title + "</a>"
             try:
                 self.bot.send_message(
