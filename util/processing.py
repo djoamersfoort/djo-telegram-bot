@@ -77,7 +77,7 @@ class BatchProcess(threading.Thread):
             try:
                 self.bot.send_message(
                     chat_id=user[0], text=message, parse_mode=ParseMode.HTML)
-                self.bot.send_message(chat_id=-275626192, text=message, parse_mode=ParseMode.HTML)
+                self.bot.send_message(chat_id="@DJOAmersfoort", text=message, parse_mode=ParseMode.HTML)
             except Unauthorized:
                 self.db.update_user(telegram_id=user[0], is_active=0)
             except TelegramError:
