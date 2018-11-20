@@ -1,4 +1,7 @@
 FROM python:2.7-alpine
+
+VOLUME /workspace/resources
+
 WORKDIR /workspace
 COPY . /workspace
 
