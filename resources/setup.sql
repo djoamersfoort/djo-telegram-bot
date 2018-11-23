@@ -24,6 +24,6 @@ CREATE TABLE web_user (
 CREATE TABLE web_channel (
     url varchar NOT NULL,
     channel_name varchar,
-    alias varchar NOT NULL.
+    alias varchar NOT NULL,
     FOREIGN KEY(url) REFERENCES web(url)
 );
