@@ -14,7 +14,7 @@ class RobotRss(object):
     def __init__(self, telegram_token, update_interval):
 
         # Initialize bot internals
-        self.db = DatabaseHandler("resources/datastore.db")
+        self.db = DatabaseHandler("resources/userdata/datastore.db")
         self.fh = FileHandler("..")
 
         # Register webhook to telegram bot
@@ -55,7 +55,6 @@ class RobotRss(object):
 
         # Add new User if not exists
         if not self.db.get_user(telegram_id=telegram_user.id):
-
             message = "Hello! I don't think we've met before! I am an RSS News Bot and would like to help you to receive your favourite news in the future! Let me first set up a few things before we start..."
             update.message.reply_text(message)
 
@@ -90,7 +89,8 @@ class RobotRss(object):
         # Check if argument matches url format
         if not FeedHandler.is_parsable(url=arg_url):
             message = "Sorry! It seems like '" + \
-                str(arg_url) + "' doesn't provide an RSS news feed.. Have you tried another URL from that provider?"
+                      str(
+                          arg_url) + "' doesn't provide an RSS news feed.. Have you tried another URL from that provider?"
             update.message.reply_text(message)
             return
 
@@ -100,13 +100,13 @@ class RobotRss(object):
 
         if any(arg_url.lower() in entry for entry in entries):
             message = "Sorry, " + telegram_user.first_name + \
-                "! I already have that url with stored in your subscriptions."
+                      "! I already have that url with stored in your subscriptions."
             update.message.reply_text(message)
             return
 
         if any(arg_entry in entry for entry in entries):
             message = "Sorry! I already have an entry with name " + \
-                arg_entry + " stored in your subscriptions.. Please choose another entry name or delete the entry using '/remove " + arg_entry + "'"
+                      arg_entry + " stored in your subscriptions.. Please choose another entry name or delete the entry using '/remove " + arg_entry + "'"
             update.message.reply_text(message)
             return
 
@@ -139,14 +139,14 @@ class RobotRss(object):
 
         if url is None:
             message = "I can not find an entry with label " + \
-                args_entry + " in your subscriptions! Please check your subscriptions using /list and use the delete command again!"
+                      args_entry + " in your subscriptions! Please check your subscriptions using /list and use the delete command again!"
             update.message.reply_text(message)
             return
 
         entries = FeedHandler.parse_feed(url[0], args_count)
         for entry in entries:
             message = "[" + url[1] + "] <a href='" + \
-                entry.link + "'>" + entry.title + "</a>"
+                      entry.link + "'>" + entry.title + "</a>"
             print(message)
 
             try:
@@ -165,7 +165,8 @@ class RobotRss(object):
         telegram_user = update.message.from_user
 
         if len(args) != 1:
-            message = "To remove a subscriptions from your list please use /remove <entryname>. To see all your subscriptions along with their entry names use /list !"
+            message = "To remove a subscriptions from your list please use /remove <entryname>. " \
+                      "To see all your subscriptions along with their entry names use /list !"
             update.message.reply_text(message)
             return
 
@@ -179,7 +180,8 @@ class RobotRss(object):
             update.message.reply_text(message)
         else:
             message = "I can not find an entry with label " + \
-                args[0] + " in your subscriptions! Please check your subscriptions using /list and use the delete command again!"
+                      args[
+                          0] + " in your subscriptions! Please check your subscriptions using /list and use the delete command again!"
             update.message.reply_text(message)
 
     def list(self, bot, update):
@@ -203,7 +205,15 @@ class RobotRss(object):
         Send a message when the command /help is issued.
         """
 
-        message = "If you need help with handling the commands, please have a look at my <a href='https://github.com/cbrgm/telegram-robot-rss'>Github</a> page. There I have summarized everything necessary for you!"
+        message = "Ik snap de volgende commando's:<br>" \
+                  "<ul>" \
+                  "<li>/help: Deze helptekst</li>" \
+                  "<li>/about: Info over deze bot</li>" \
+                  "<li>/start: Zet het sturen van nieuwsupdates aan</li>" \
+                  "<li>/stop: Stop met sturen van nieuwsupdates</li>" \
+                  "<li>/list: Geef een lijst van feeds</li>" \
+                  "<li>/add <url> <naam>: Voeg een nieuwe feed toe</li>" \
+                  "</ul>"
         update.message.reply_text(message, parse_mode=ParseMode.HTML)
 
     def stop(self, bot, update):
@@ -214,7 +224,8 @@ class RobotRss(object):
         telegram_user = update.message.from_user
         self.db.update_user(telegram_id=telegram_user.id, is_active=0)
 
-        message = "Oh.. Okay, I will not send you any more news updates! If you change your mind and you want to receive messages from me again use /start command again!"
+        message = "Oh.. Okay, I will not send you any more news updates!" \
+                  " If you change your mind and you want to receive messages from me again use /start command again!"
         update.message.reply_text(message)
 
     def about(self, bot, update):
@@ -222,7 +233,8 @@ class RobotRss(object):
         Shows about information
         """
 
-        message = "Thank you for using <b>RobotRSS</b>! \n\n If you like the bot, please recommend it to others! \n\nDo you have problems, ideas or suggestions about what the bot should be able to do? Then contact my developer <a href='http://cbrgm.de'>@cbrgm</a> or create an issue on <a href='https://github.com/cbrgm/telegram-robot-rss'>Github</a>. There you will also find my source code, if you are interested in how I work!"
+        message = "This is the official DJO Amersfoort Telegram Bot. View my sourcecode here: " \
+                  " <a href='https://github.com/rmoesbergen/telegram-robot-rss'>Github</a>."
         update.message.reply_text(message, parse_mode=ParseMode.HTML)
 
 
