@@ -1,6 +1,6 @@
-certifi
-emoji
-feedparser
-python-dateutil
-python-telegram-bot
-pytz
+certifi==2018.10.15
+emoji==0.5.1
+feedparser==5.2.1
+python-dateutil==2.7.5
+python-telegram-bot==11.1.0
+pytz==2018.7
