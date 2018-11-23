@@ -58,7 +58,7 @@ class RobotRss(object):
 
         # Add new User if not exists
         if not self.db.get_user(telegram_id=telegram_user.id):
-            message = "Hello! I don't think we've met before! I am an RSS News Bot and would like to help you to receive your favourite news in the future! Let me first set up a few things before we start..."
+            message = "Hee, jou ken ik nog niet.. Ik stop je ff in mijn database, momentje."
             update.message.reply_text(message)
 
             self.db.add_user(telegram_id=telegram_user.id,
@@ -71,7 +71,7 @@ class RobotRss(object):
 
         self.db.update_user(telegram_id=telegram_user.id, is_active=1)
 
-        message = "You will now receive news! Use /help if you need some tips how to tell me what to do!"
+        message = "Je krijgt nu persoonlijk nieuws. Tik /help voor de commando's"
         update.message.reply_text(message)
 
     def add(self, bot, update, args):
@@ -82,8 +82,8 @@ class RobotRss(object):
         telegram_user = update.message.from_user
 
         if len(args) != 2:
-            message = "Sorry! I could not add the entry! Please use the the command passing the following arguments:\n\n" \
-                      " /add <url> <entryname> \n\n Here is a short example: \n\n /add http://www.feedforall.com/sample.xml ExampleEntry"
+            message = "Ja, daar snap dus ik dus niks van. Probeer dit eens:\n" \
+                      " /add <url> <naampje>"
             update.message.reply_text(message)
             return
 
@@ -92,8 +92,7 @@ class RobotRss(object):
 
         # Check if argument matches url format
         if not FeedHandler.is_parsable(url=arg_url):
-            message = "Sorry! It seems like '" + \
-                      str(arg_url) + "' doesn't provide an RSS news feed.. Have you tried another URL from that provider?"
+            message = "Die url lijkt niet helemaal lekker!"
             update.message.reply_text(message)
             return
 
@@ -102,20 +101,18 @@ class RobotRss(object):
         print(entries)
 
         if any(arg_url.lower() in entry for entry in entries):
-            message = "Sorry, " + telegram_user.first_name + \
-                      "! I already have that url with stored in your subscriptions."
+            message = "Deze url heb je al toegevoegd!"
             update.message.reply_text(message)
             return
 
         if any(arg_entry in entry for entry in entries):
-            message = "Sorry! I already have an entry with name " + \
-                      arg_entry + " stored in your subscriptions.. Please choose another entry name or delete the entry using '/remove " + arg_entry + "'"
+            message = "Je hebt hetzelfde naampje gebruikt als een andere url, da ga nie"
             update.message.reply_text(message)
             return
 
         self.db.add_user_bookmark(
             telegram_id=telegram_user.id, url=arg_url.lower(), alias=arg_entry)
-        message = "I successfully added " + arg_entry + " to your subscriptions!"
+        message = "Hij staat erbij! Gebruik /list als je me niet gelooft"
         update.message.reply_text(message)
 
     def get(self, bot, update, args):
@@ -238,8 +235,7 @@ class RobotRss(object):
         telegram_user = update.message.from_user
         self.db.update_user(telegram_id=telegram_user.id, is_active=0)
 
-        message = "Oh.. Okay, I will not send you any more news updates!" \
-                  " If you change your mind and you want to receive messages from me again use /start command again!"
+        message = "Jahaaa, ik stop al."
         update.message.reply_text(message)
 
     def about(self, bot, update):
@@ -247,7 +243,7 @@ class RobotRss(object):
         Shows about information
         """
 
-        message = "This is the official DJO Amersfoort Telegram Bot. View my sourcecode here: " \
+        message = "Dit is de officiele DJO Amersfoort Telegram Bot. Hier staat mijn source: " \
                   " <a href='https://github.com/rmoesbergen/telegram-robot-rss'>Github</a>."
         update.message.reply_text(message, parse_mode=ParseMode.HTML)
 
