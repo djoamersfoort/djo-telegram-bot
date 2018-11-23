@@ -219,13 +219,14 @@ class RobotRss(object):
         Send a message when the command /help is issued.
         """
 
-        message = "Ik snap de volgende commandos:\n" \
+        message = "Ik snap de volgende commando's:\n" \
                   "/help: Deze helptekst\n" \
                   "/about: Info over deze bot\n" \
                   "/start: Zet het sturen van nieuwsupdates aan\n" \
                   "/stop: Stop met sturen van nieuwsupdates\n" \
                   "/list: Geef een lijst van feeds\n" \
-                  "/add <url> <naam>: Voeg een nieuwe feed toe\n"
+                  "/add <url> <naam>: Voeg een nieuwe feed toe\n" \
+                  "/addgroup <url> <@grouphandle>"
         update.message.reply_text(message)
 
     def stop(self, bot, update):
@@ -251,8 +252,8 @@ class RobotRss(object):
 
     def add_group(self, bot, update, args):
         if len(args) != 2:
-            message = "Sorry! I could not add the entry! Please use the the command passing the following arguments:\n\n" \
-                      " /addgroup <url> <groupame> \n\n Here is a short example: \n\n /addgroup http://www.djoamersfoort.nl/feed @DJOAmersfoort"
+            message = "Ja, daar snap ik dus helemaal niks van. Probeer dit eens:\n" \
+                      "/addgroup <url> <groupame>"
             update.message.reply_text(message)
             return
 
@@ -266,9 +267,15 @@ class RobotRss(object):
             return
 
         if not arg_channel.startswith('@'):
-            message = "Een channel naam moet met @ starten"
+            message = "Een groepnaam moet met @ starten"
             update.message.reply_text(message)
             return
+
+        channels = self.db.get_channels()
+        for channel in channels:
+            if channel[0] == arg_channel and channel[1] == arg_url:
+                update.message.reply_text("Deze url is al aanwezig voor deze groep!")
+                return
 
         # Add the channel + url
         self.db.add_channel(arg_channel, arg_url)
