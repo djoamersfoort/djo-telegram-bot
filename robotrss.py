@@ -31,6 +31,7 @@ class RobotRss(object):
         self._addCommand(CommandHandler("get", self.get, pass_args=True))
         self._addCommand(CommandHandler("remove", self.remove, pass_args=True))
         self._addCommand(CommandHandler("addgroup", self.add_group, pass_args=True))
+        self._addCommand(MessageHandler(Filters.text, self.vechten))
         self._addCommand(MessageHandler(Filters.command, self.unknown))
 
         # Start the Bot
@@ -281,6 +282,11 @@ class RobotRss(object):
         self.db.add_channel(arg_channel, arg_url)
         message = "Channel en url zijn toegevoegd!"
         update.message.reply_text(message)
+
+    def vechten(self, bot, update):
+        if "kom vechten dan" in update.message.text.lower():
+            print("Iemand wil vechten")
+            update.message.reply_document('https://i.kym-cdn.com/photos/images/original/001/356/324/914.gif')
 
     def unknown(self, bot, update):
         message = "Computer says no"
