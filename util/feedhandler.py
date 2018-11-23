@@ -10,11 +10,13 @@ class FeedHandler(object):
         Parses the given url, returns a list containing all available entries
         """
 
+        feed = feedparser.parse(url)
+        if feed['bozo'] == 1:
+            raise ValueError('Failed to parse feed {0}: {1}'.format(url, feed['bozo_exception']))
+
         if 1 <= entries <= 10:
-            feed = feedparser.parse(url)
             return feed.entries[:entries]
         else:
-            feed = feedparser.parse(url)
             return feed.entries[:4]
 
     @staticmethod

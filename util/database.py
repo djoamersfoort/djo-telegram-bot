@@ -251,3 +251,18 @@ class DatabaseHandler(object):
         conn.close()
 
         return result
+
+    def get_channels_for_url(self, url):
+        conn = sqlite3.connect(self.database_path)
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "SELECT channel_name "
+            "FROM web_channel "
+            "WHERE url=? ", url)
+        result = cursor.fetchall()
+
+        conn.commit()
+        conn.close()
+
+        return result

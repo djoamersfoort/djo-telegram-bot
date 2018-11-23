@@ -50,19 +50,20 @@ class BatchProcess(threading.Thread):
 
     def update_feed(self, url):
         telegram_users = self.db.get_users_for_url(url=url[0])
+        telegram_channels = self.db.get_channels_for_url(url=url[0])
 
-        for user in telegram_users:
-            if user[6]:  # is_active
-                try:
-                    for post in FeedHandler.parse_feed(url[0]):
-                        self.send_newest_messages(
-                            url=url, post=post, user=user)
-                except:
-                    traceback.print_exc()
-                    message = "Something went wrong when I tried to parse the URL: \n\n " + \
-                        url[0] + "\n\nCould you please check that for me? Remove the url from your subscriptions using the /remove command, it seems like it does not work anymore!"
-                    self.bot.send_message(
-                        chat_id=user[0], text=message, parse_mode=ParseMode.HTML)
+        try:
+            posts = FeedHandler.parse_feed(url[0])
+        except ValueError:
+            traceback.print_exc()
+            return
+
+        for post in posts:
+            for user in telegram_users:
+                if user[6]:  # is_active
+                    self.send_newest_messages(url=url, post=post, user=user)
+            for channel in telegram_channels:
+                self.send_newest_messages(url=url, post=post, user=[channel])
 
         self.db.update_url(url=url[0], last_updated=str(
             DateHandler.get_datetime_now()))
@@ -72,16 +73,17 @@ class BatchProcess(threading.Thread):
         url_update_date = DateHandler.parse_datetime(datetime=url[1])
 
         if post_update_date > url_update_date:
-            message = "Er is een nieuw artikel op de website! <a href='" + post.link + \
-                "'>" + post.title + "</a>"
+            message = "Er is door {0} een nieuw artikel op de website geplaatst!<br>" \
+                      "<a href='{1}'>{2}</a>".format(post.author, post.title, post.link)
             try:
                 self.bot.send_message(
                     chat_id=user[0], text=message, parse_mode=ParseMode.HTML)
-                self.bot.send_message(chat_id="@DJOAmersfoort", text=message, parse_mode=ParseMode.HTML)
             except Unauthorized:
-                self.db.update_user(telegram_id=user[0], is_active=0)
+                if not user[0].startswith('@'):
+                    self.db.update_user(telegram_id=user[0], is_active=0)
             except TelegramError:
                 # handle all other telegram related errors
+                traceback.print_exc()
                 pass
 
     def set_running(self, running):
