@@ -50,8 +50,7 @@ class DatabaseHandler(object):
         conn = sqlite3.connect(self.database_path)
         cursor = conn.cursor()
 
-        cursor.execute("DELETE FROM user WHERE telegram_id=" +
-                       str(telegram_id))
+        cursor.execute("DELETE FROM user WHERE telegram_id=?", telegram_id)
 
         conn.commit()
         conn.close()
@@ -92,7 +91,7 @@ class DatabaseHandler(object):
         cursor = conn.cursor()
 
         cursor.execute(
-            "SELECT * FROM user WHERE telegram_id = " + str(telegram_id))
+            "SELECT * FROM user WHERE telegram_id = ?", telegram_id)
         result = cursor.fetchone()
 
         conn.commit()
@@ -114,8 +113,8 @@ class DatabaseHandler(object):
         conn = sqlite3.connect(self.database_path)
         cursor = conn.cursor()
 
-        sql_command = "DELETE FROM web_user WHERE url='" + str(url) + "';"
-        cursor.execute(sql_command)
+        sql_command = "DELETE FROM web_user WHERE url=?"
+        cursor.execute(sql_command, url)
 
         sql_command = "DELETE FROM web WHERE web.url NOT IN (SELECT web_user.url from web_user)"
         cursor.execute(sql_command)
@@ -145,9 +144,9 @@ class DatabaseHandler(object):
         conn = sqlite3.connect(self.database_path)
         cursor = conn.cursor()
 
-        sql_command = "SELECT * FROM web WHERE url='" + str(url) + "';"
+        sql_command = "SELECT * FROM web WHERE url=?"
 
-        cursor.execute(sql_command)
+        cursor.execute(sql_command, url)
         result = cursor.fetchone()
 
         conn.commit()
@@ -207,8 +206,11 @@ class DatabaseHandler(object):
         cursor = conn.cursor()
 
         cursor.execute(
-            "SELECT web.url, web_user.alias, web.last_updated FROM web, web_user WHERE web_user.url = web.url AND web_user.telegram_id =" +
-            str(telegram_id) + " AND web_user.alias ='" + str(alias) + "';")
+            "SELECT web.url, web_user.alias, web.last_updated "
+            "FROM web, web_user "
+            "WHERE web_user.url = web.url "
+            "AND web_user.telegram_id=? "
+            "AND web_user.alias=?", (telegram_id, alias))
 
         result = cursor.fetchone()
 
@@ -222,8 +224,10 @@ class DatabaseHandler(object):
         cursor = conn.cursor()
 
         cursor.execute(
-            "SELECT web.url, web_user.alias, web.last_updated FROM web, web_user WHERE web_user.url = web.url AND web_user.telegram_id =" +
-            str(telegram_id) + ";")
+            "SELECT web.url, web_user.alias, web.last_updated "
+            "FROM web, web_user "
+            "WHERE web_user.url = web.url "
+            "AND web_user.telegram_id=?", telegram_id)
 
         result = cursor.fetchall()
 
@@ -237,7 +241,10 @@ class DatabaseHandler(object):
         cursor = conn.cursor()
 
         cursor.execute(
-            "SELECT user.*, web_user.alias FROM user, web_user WHERE web_user.telegram_id = user.telegram_id AND web_user.url ='" + str(url) + "';")
+            "SELECT user.*, web_user.alias "
+            "FROM user, web_user "
+            "WHERE web_user.telegram_id = user.telegram_id "
+            "AND web_user.url=?", url)
         result = cursor.fetchall()
 
         conn.commit()
