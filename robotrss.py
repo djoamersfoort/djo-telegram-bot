@@ -191,10 +191,8 @@ class RobotRss(object):
 
         telegram_user = update.message.from_user
 
-        message = "Here is a list of all subscriptions I stored for you!"
+        message = "Hier is het lijstje met url's en groepen/users:"
         update.message.reply_text(message)
-
-        print("1")
 
         # Group URL's
         entries = self.db.get_channels()
@@ -202,15 +200,11 @@ class RobotRss(object):
             message = "[" + entry[0] + "]\n " + entry[1]
             update.message.reply_text(message)
 
-        print("2")
-
         # User URL's
         entries = self.db.get_urls_for_user(telegram_id=telegram_user.id)
         for entry in entries:
             message = "[" + entry[1] + "]\n " + entry[0]
             update.message.reply_text(message)
-
-        print("3")
 
     def help(self, bot, update):
         """
