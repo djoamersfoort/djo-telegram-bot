@@ -76,7 +76,7 @@ class BatchProcess(threading.Thread):
 
         if post_update_date > url_update_date:
             message = "Er is door {0} een nieuw artikel op de website geplaatst!\n" \
-                      "<a href='{1}'>{2}</a>".format(post.author, post.title, post.link)
+                      "<a href='{1}'>{2}</a>".format(post.author, post.link, post.title)
             print(message)
             try:
                 self.bot.send_message(
