@@ -1,7 +1,7 @@
 import sqlite3
 from util.filehandler import FileHandler
 from util.datehandler import DateHandler as dh
-
+import traceback
 
 class DatabaseHandler(object):
 
@@ -50,7 +50,7 @@ class DatabaseHandler(object):
         conn = sqlite3.connect(self.database_path)
         cursor = conn.cursor()
 
-        cursor.execute("DELETE FROM user WHERE telegram_id=?", telegram_id)
+        cursor.execute("DELETE FROM user WHERE telegram_id=?", (telegram_id,))
 
         conn.commit()
         conn.close()
@@ -91,7 +91,7 @@ class DatabaseHandler(object):
         cursor = conn.cursor()
 
         cursor.execute(
-            "SELECT * FROM user WHERE telegram_id = ?", telegram_id)
+            "SELECT * FROM user WHERE telegram_id=?", (telegram_id,))
         result = cursor.fetchone()
 
         conn.commit()
@@ -146,7 +146,7 @@ class DatabaseHandler(object):
 
         sql_command = "SELECT * FROM web WHERE url=?"
 
-        cursor.execute(sql_command, url)
+        cursor.execute(sql_command, (url,))
         result = cursor.fetchone()
 
         conn.commit()
@@ -227,7 +227,7 @@ class DatabaseHandler(object):
             "SELECT web.url, web_user.alias, web.last_updated "
             "FROM web, web_user "
             "WHERE web_user.url = web.url "
-            "AND web_user.telegram_id=?", telegram_id)
+            "AND web_user.telegram_id=?", (telegram_id,))
 
         result = cursor.fetchall()
 
@@ -244,7 +244,30 @@ class DatabaseHandler(object):
             "SELECT user.*, web_user.alias "
             "FROM user, web_user "
             "WHERE web_user.telegram_id = user.telegram_id "
-            "AND web_user.url=?", url)
+            "AND web_user.url=?", (url,))
+        result = cursor.fetchall()
+
+        conn.commit()
+        conn.close()
+
+        return result
+
+    def add_channel(self, channel_name, url):
+        self.add_url(url)
+
+        conn = sqlite3.connect(self.database_path)
+        cursor = conn.cursor()
+
+        cursor.execute("INSERT INTO web_channel (url, channel_name, alias) VALUES (?,?,?)",
+                       (url, channel_name, ''))
+        conn.commit()
+        conn.close()
+
+    def get_channels(self):
+        conn = sqlite3.connect(self.database_path)
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT channel_name, url FROM web_channel")
         result = cursor.fetchall()
 
         conn.commit()
@@ -259,7 +282,7 @@ class DatabaseHandler(object):
         cursor.execute(
             "SELECT channel_name "
             "FROM web_channel "
-            "WHERE url=? ", url)
+            "WHERE url=? ", (url,))
         result = cursor.fetchall()
 
         conn.commit()

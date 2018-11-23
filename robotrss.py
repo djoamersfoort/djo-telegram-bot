@@ -30,6 +30,8 @@ class RobotRss(object):
         self._addCommand(CommandHandler("add", self.add, pass_args=True))
         self._addCommand(CommandHandler("get", self.get, pass_args=True))
         self._addCommand(CommandHandler("remove", self.remove, pass_args=True))
+        self._addCommand(CommandHandler("addgroup", self.add_group, pass_args=True))
+        self._addCommand(MessageHandler(Filters.command, self.unknown))
 
         # Start the Bot
         self.processing = BatchProcess(
@@ -79,7 +81,8 @@ class RobotRss(object):
         telegram_user = update.message.from_user
 
         if len(args) != 2:
-            message = "Sorry! I could not add the entry! Please use the the command passing the following arguments:\n\n /add <url> <entryname> \n\n Here is a short example: \n\n /add http://www.feedforall.com/sample.xml ExampleEntry"
+            message = "Sorry! I could not add the entry! Please use the the command passing the following arguments:\n\n" \
+                      " /add <url> <entryname> \n\n Here is a short example: \n\n /add http://www.feedforall.com/sample.xml ExampleEntry"
             update.message.reply_text(message)
             return
 
@@ -89,8 +92,7 @@ class RobotRss(object):
         # Check if argument matches url format
         if not FeedHandler.is_parsable(url=arg_url):
             message = "Sorry! It seems like '" + \
-                      str(
-                          arg_url) + "' doesn't provide an RSS news feed.. Have you tried another URL from that provider?"
+                      str(arg_url) + "' doesn't provide an RSS news feed.. Have you tried another URL from that provider?"
             update.message.reply_text(message)
             return
 
@@ -194,27 +196,37 @@ class RobotRss(object):
         message = "Here is a list of all subscriptions I stored for you!"
         update.message.reply_text(message)
 
-        entries = self.db.get_urls_for_user(telegram_id=telegram_user.id)
+        print("1")
 
+        # Group URL's
+        entries = self.db.get_channels()
+        for entry in entries:
+            message = "[" + entry[0] + "]\n " + entry[1]
+            update.message.reply_text(message)
+
+        print("2")
+
+        # User URL's
+        entries = self.db.get_urls_for_user(telegram_id=telegram_user.id)
         for entry in entries:
             message = "[" + entry[1] + "]\n " + entry[0]
             update.message.reply_text(message)
+
+        print("3")
 
     def help(self, bot, update):
         """
         Send a message when the command /help is issued.
         """
 
-        message = "Ik snap de volgende commando's:<br>" \
-                  "<ul>" \
-                  "<li>/help: Deze helptekst</li>" \
-                  "<li>/about: Info over deze bot</li>" \
-                  "<li>/start: Zet het sturen van nieuwsupdates aan</li>" \
-                  "<li>/stop: Stop met sturen van nieuwsupdates</li>" \
-                  "<li>/list: Geef een lijst van feeds</li>" \
-                  "<li>/add <url> <naam>: Voeg een nieuwe feed toe</li>" \
-                  "</ul>"
-        update.message.reply_text(message, parse_mode=ParseMode.HTML)
+        message = "Ik snap de volgende commandos:\n" \
+                  "/help: Deze helptekst\n" \
+                  "/about: Info over deze bot\n" \
+                  "/start: Zet het sturen van nieuwsupdates aan\n" \
+                  "/stop: Stop met sturen van nieuwsupdates\n" \
+                  "/list: Geef een lijst van feeds\n" \
+                  "/add <url> <naam>: Voeg een nieuwe feed toe\n"
+        update.message.reply_text(message)
 
     def stop(self, bot, update):
         """
@@ -236,6 +248,36 @@ class RobotRss(object):
         message = "This is the official DJO Amersfoort Telegram Bot. View my sourcecode here: " \
                   " <a href='https://github.com/rmoesbergen/telegram-robot-rss'>Github</a>."
         update.message.reply_text(message, parse_mode=ParseMode.HTML)
+
+    def add_group(self, bot, update, args):
+        if len(args) != 2:
+            message = "Sorry! I could not add the entry! Please use the the command passing the following arguments:\n\n" \
+                      " /addgroup <url> <groupame> \n\n Here is a short example: \n\n /addgroup http://www.djoamersfoort.nl/feed @DJOAmersfoort"
+            update.message.reply_text(message)
+            return
+
+        arg_url = FeedHandler.format_url_string(string=args[0])
+        arg_channel = args[1]
+
+        # Check if argument matches url format
+        if not FeedHandler.is_parsable(url=arg_url):
+            message = "Die url lijkt niet helemaal lekker!"
+            update.message.reply_text(message)
+            return
+
+        if not arg_channel.startswith('@'):
+            message = "Een channel naam moet met @ starten"
+            update.message.reply_text(message)
+            return
+
+        # Add the channel + url
+        self.db.add_channel(arg_channel, arg_url)
+        message = "Channel en url zijn toegevoegd!"
+        update.message.reply_text(message)
+
+    def unknown(self, bot, update):
+        message = "Computer says no"
+        update.message.reply_text(message)
 
 
 if __name__ == '__main__':
