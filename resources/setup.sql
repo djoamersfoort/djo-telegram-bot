@@ -20,3 +20,10 @@ CREATE TABLE web_user (
 	FOREIGN KEY(url) REFERENCES web(url),
 	FOREIGN KEY(telegram_id) REFERENCES user(telegram_id)
 );
+
+CREATE TABLE web_channel (
+    url varchar NOT NULL,
+    channel_name varchar,
+    alias varchar NOT NULL.
+    FOREIGN KEY(url) REFERENCES web(url)
+);
