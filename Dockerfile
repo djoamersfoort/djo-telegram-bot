@@ -1,6 +1,6 @@
 FROM python:3.6-alpine
 
-VOLUME /workspace/resources
+VOLUME /workspace/resources/userdata
 
 WORKDIR /workspace
 COPY . /workspace
