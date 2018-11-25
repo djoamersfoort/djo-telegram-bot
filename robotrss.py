@@ -273,7 +273,7 @@ class RobotRss(object):
         update.message.reply_text(message)
 
     def vechten(self, bot, update):
-        if "kom vechten dan" in update.message.text.lower():
+        if "kom vechten" in update.message.text.lower():
             print("Iemand wil vechten")
             update.message.reply_document('https://i.kym-cdn.com/photos/images/original/001/356/324/914.gif')
 
