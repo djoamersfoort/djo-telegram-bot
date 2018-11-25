@@ -15,7 +15,7 @@
 `/remove <entryname>` - Removes an exisiting subscription from your list.  
 `/get <entryname> [optional: <count 1-10>]` - Manually parses your subscription, sending you the last <count> elements.  
 `/list` - Shows all your subscriptions as a list.
-`/addgroup <url> <@groupname>` - Adds a feed url and sends updates to a supergroup
+`/addgroup <url> <@groupname> - Adds a feed url and sends updates to a supergroup
 
 **Other**  
 `/about` - Shows some information about RobotRSS Bot  
