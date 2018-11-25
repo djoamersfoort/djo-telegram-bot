@@ -263,8 +263,7 @@ class RobotRss(object):
             return
 
         channels = self.db.get_channels()
-        for channel in channels:
-            if channel[0] == arg_channel and channel[1] == arg_url:
+        if any(channel[0] == arg_channel and channel[1] == arg_url for channel in channels):
                 update.message.reply_text("Deze url is al aanwezig voor deze groep!")
                 return
 
