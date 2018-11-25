@@ -238,7 +238,7 @@ class RobotRss(object):
         """
 
         message = "Dit is de officiele DJO Amersfoort Telegram Bot. Hier staat mijn source: " \
-                  " <a href='https://github.com/rmoesbergen/telegram-robot-rss'>Github</a>."
+                  " <a href='https://github.com/djoamersfoort/djo-telegram-bot'>Github</a>."
         update.message.reply_text(message, parse_mode=ParseMode.HTML)
 
     def add_group(self, bot, update, args):
