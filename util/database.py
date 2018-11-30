@@ -68,12 +68,13 @@ class DatabaseHandler(object):
 
         sql_command = "UPDATE user SET "
         for key in kwargs:
-            sql_command = sql_command + \
-                str(key) + "='" + str(kwargs[key]) + "', "
-        sql_command = sql_command[:-2] + \
-            " WHERE telegram_id=" + str(telegram_id)
+            sql_command += str(key) + '=:' + str(key) + ','
 
-        cursor.execute(sql_command)
+        sql_command = sql_command[:-1] + \
+            " WHERE telegram_id=:telegram_id"
+        kwargs['telegram_id'] = telegram_id
+
+        cursor.execute(sql_command, kwargs)
 
         conn.commit()
         conn.close()
@@ -128,14 +129,13 @@ class DatabaseHandler(object):
 
         sql_command = "UPDATE web SET "
         for key in kwargs:
-            sql_command = sql_command + \
-                str(key) + "='" + str(kwargs[key]) + "', "
-        if len(kwargs) == 0:
-            sql_command = sql_command + " WHERE url='" + str(url) + "';"
-        else:
-            sql_command = sql_command[:-2] + " WHERE url='" + str(url) + "';"
+            sql_command += str(key) + '=:' + str(key) + ','
 
-        cursor.execute(sql_command)
+        sql_command = sql_command[:-1] + \
+            " WHERE url=:url"
+        kwargs['url'] = url
+
+        cursor.execute(sql_command, kwargs)
 
         conn.commit()
         conn.close()

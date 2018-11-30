@@ -98,7 +98,6 @@ class RobotRss(object):
 
         # Check if entry does not exists
         entries = self.db.get_urls_for_user(telegram_id=telegram_user.id)
-        print(entries)
 
         if any(arg_url.lower() in entry for entry in entries):
             message = "Deze url heb je al toegevoegd!"
