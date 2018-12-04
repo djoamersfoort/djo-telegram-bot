@@ -267,6 +267,7 @@ class RobotRss(object):
                 return
 
         # Add the channel + url
+        self.db.add_url(arg_url)
         self.db.add_channel(arg_channel, arg_url)
         message = "Channel en url zijn toegevoegd!"
         update.message.reply_text(message)

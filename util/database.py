@@ -117,7 +117,9 @@ class DatabaseHandler(object):
         sql_command = "DELETE FROM web_user WHERE url=?"
         cursor.execute(sql_command, url)
 
-        sql_command = "DELETE FROM web WHERE web.url NOT IN (SELECT web_user.url from web_user)"
+        sql_command = "DELETE FROM web " \
+                      "WHERE web.url NOT IN (SELECT url from web_user) " \
+                      "AND web.url NOT IN (SELECT url from web_channel) "
         cursor.execute(sql_command)
 
         conn.commit()
@@ -186,7 +188,9 @@ class DatabaseHandler(object):
         cursor.execute(
             "DELETE FROM web_user WHERE telegram_id=(?) AND url = (?)", (telegram_id, url))
         cursor.execute(
-            "DELETE FROM web WHERE web.url NOT IN (SELECT web_user.url from web_user)")
+            "DELETE FROM web "
+            "WHERE web.url NOT IN (SELECT url from web_user) "
+            "AND web.url NOT IN (SELECT url from web_channel)")
 
         conn.commit()
         conn.close()
