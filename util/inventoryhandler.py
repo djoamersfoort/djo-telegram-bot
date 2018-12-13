@@ -10,15 +10,13 @@ class InventoryHandler:
 
     def search(self, keyword):
         result = requests.get(self.URL + '/items/search/{0}'.format(keyword))
+        print(result)
         if not result.ok:
-            print(result)
             return "Er ging iets mis!"
 
-        print(result)
         items = result.json()['items']
         image = None
         for item in items:
-            print(item)
             location_id = item['location_id']
             image = self.URL + "/location/{0}/photo".format(location_id)
 
