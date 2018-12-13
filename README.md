@@ -17,9 +17,9 @@
 `/list` - Shows all your subscriptions as a list.  
 `/addgroup <url> <@groupname>` - Adds a feed url and sends updates to a supergroup.
 
-** DJO Inventory **
+**DJO Inventory**  
 `/search <keyword>` - Searches the DJO inventory for an item, and replies with the first result 
 
 **Other**  
 `/about` - Shows some information about RobotRSS Bot
-`/help` - Shows the help menue
+`/help` - Shows the help menu
