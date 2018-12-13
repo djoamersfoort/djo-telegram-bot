@@ -284,7 +284,7 @@ class RobotRss(object):
         keyword = args[0]
         (text, image) = self.inventory.search(keyword)
         update.message.reply_text(text, parse_mode=ParseMode.HTML)
-        update.message.reply_document(image)
+        update.message.reply_photo(image, quote=False)
 
     def vechten(self, bot, update):
         if "kom vechten" in update.message.text.lower():
