@@ -7,6 +7,7 @@ from util.filehandler import FileHandler
 from util.database import DatabaseHandler
 from util.processing import BatchProcess
 from util.feedhandler import FeedHandler
+from util.inventoryhandler import InventoryHandler
 
 
 class RobotRss(object):
@@ -16,6 +17,7 @@ class RobotRss(object):
         # Initialize bot internals
         self.db = DatabaseHandler("resources/userdata/datastore.db")
         self.fh = FileHandler("..")
+        self.inventory = InventoryHandler()
 
         # Register webhook to telegram bot
         self.updater = Updater(telegram_token)
@@ -31,6 +33,7 @@ class RobotRss(object):
         self._addCommand(CommandHandler("get", self.get, pass_args=True))
         self._addCommand(CommandHandler("remove", self.remove, pass_args=True))
         self._addCommand(CommandHandler("addgroup", self.add_group, pass_args=True))
+        self._addCommand(CommandHandler("search", self.inventory_search, pass_args=True))
         self._addCommand(MessageHandler(Filters.text, self.vechten))
         self._addCommand(MessageHandler(Filters.command, self.unknown))
 
@@ -217,7 +220,8 @@ class RobotRss(object):
                   "/stop: Stop met sturen van nieuwsupdates\n" \
                   "/list: Geef een lijst van feeds\n" \
                   "/add <url> <naam>: Voeg een nieuwe feed toe\n" \
-                  "/addgroup <url> <@grouphandle>"
+                  "/addgroup <url> <@grouphandle>\n" \
+                  "/search <keyword>: Zoek in de DJO inventaris"
         update.message.reply_text(message)
 
     def stop(self, bot, update):
@@ -271,6 +275,16 @@ class RobotRss(object):
         self.db.add_channel(arg_channel, arg_url)
         message = "Channel en url zijn toegevoegd!"
         update.message.reply_text(message)
+
+    def inventory_search(self, bot, update, args):
+        if len(args) != 1:
+            update.message.reply_text('Waar wil je naar zoeken?')
+            return
+
+        keyword = args[0]
+        (text, image) = self.inventory.search(keyword)
+        update.message.reply_text(text, parse_mode=ParseMode.HTML)
+        update.message.reply_document(image)
 
     def vechten(self, bot, update):
         if "kom vechten" in update.message.text.lower():

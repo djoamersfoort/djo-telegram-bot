@@ -4,3 +4,4 @@ feedparser==5.2.1
 python-dateutil==2.7.5
 python-telegram-bot==11.1.0
 pytz==2018.7
+requests
