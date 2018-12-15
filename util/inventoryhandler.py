@@ -2,7 +2,6 @@ import requests
 
 
 class InventoryHandler:
-
     URL = 'https://djoinventory.rmoesbergen.nl/api/v1'
 
     def __init__(self):
@@ -20,8 +19,8 @@ class InventoryHandler:
             location_id = item['location_id']
             image = self.URL + "/location/{0}/photo".format(location_id)
 
-            response = "Gevonden: {0} ({1})\n".format(item['name'], item['description'])
-            response += "Locatie: {0}, ".format(item['location_description'])
+            response = "<b>Gevonden</b>: {0} ({1})\n".format(item['name'], item['description'])
+            response += "<b>Locatie</b>: {0}".format(item['location_description'])
             break
         else:
             response = "Helaas, niets gevonden!"
@@ -32,7 +31,7 @@ class InventoryHandler:
         result = requests.get(self.URL + '/items/search/{0}'.format(keyword))
         print(result)
         if not result.ok:
-            return False # dit zou beter kunnen. exception?
+            return False  # dit zou beter kunnen. exception?
 
         items = result.json()['items']
 
@@ -41,8 +40,6 @@ class InventoryHandler:
             location_id = item['location_id']
             image = self.URL + "/location/{0}/photo".format(location_id)
 
-            response = "Gevonden: {0} ({1})\n".format(item['name'], item['description'])
-            response += "Locatie: {0}, ".format(item['location_description'])
             results.append((item['name'], item['description'], item['location'], image))
 
         if len(results) == 0:

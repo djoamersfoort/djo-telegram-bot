@@ -10,6 +10,7 @@ from util.feedhandler import FeedHandler
 from util.inventoryhandler import InventoryHandler
 from telegram.utils.helpers import escape_markdown
 
+
 class RobotRss(object):
 
     def __init__(self, telegram_token, update_interval):
@@ -63,7 +64,8 @@ class RobotRss(object):
                 id=uuid4(),
                 title=result[0],
                 description=result[1],
-                caption="<b>Voorwerp</b>: {}\n<b>Beschrijving: {}</b>\n<b>Locatie:</b> {}".format(result[0], result[1], result[2]),
+                caption="<b>Voorwerp</b>: {}\n<b>Omschrijving:</b> {}\n<b>Locatie:</b> {}".format(result[0], result[1],
+                                                                                                  result[2]),
                 parse_mode="HTML",
                 photo_url=result[3],
                 thumb_url=result[3])
@@ -286,8 +288,8 @@ class RobotRss(object):
 
         channels = self.db.get_channels()
         if any(channel[0] == arg_channel and channel[1] == arg_url for channel in channels):
-                update.message.reply_text("Deze url is al aanwezig voor deze groep!")
-                return
+            update.message.reply_text("Deze url is al aanwezig voor deze groep!")
+            return
 
         # Add the channel + url
         self.db.add_url(arg_url)
@@ -296,14 +298,13 @@ class RobotRss(object):
         update.message.reply_text(message)
 
     def inventory_search(self, bot, update, args):
-        if len(args) != 1:
+        if not len(args) >= 1:
             update.message.reply_text('Waar wil je naar zoeken?')
             return
 
-        keyword = args[0]
+        keyword = ' '.join(args[0:])
         (text, image) = self.inventory.search(keyword)
-        update.message.reply_text(text, parse_mode=ParseMode.HTML)
-        update.message.reply_photo(image, quote=False)
+        update.message.reply_photo(image, quote=False, caption=text, parse_mode=ParseMode.HTML)
 
     def vechten(self, bot, update):
         if "kom vechten" in update.message.text.lower():
