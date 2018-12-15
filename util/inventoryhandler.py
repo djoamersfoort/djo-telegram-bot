@@ -1,4 +1,5 @@
 import requests
+import time
 
 
 class InventoryHandler:
@@ -8,20 +9,21 @@ class InventoryHandler:
         pass
 
     def search(self, keyword):
+        print(keyword)
         result = requests.get(self.URL + '/items/search/{0}'.format(keyword))
-        print(result)
+        print(result.content)
         if not result.ok:
             return "Er ging iets mis!"
 
         items = result.json()['items']
         image = None
-        for item in items:
+        if len(items) > 0:
+            item = items[0]
             location_id = item['location_id']
-            image = self.URL + "/location/{0}/photo".format(location_id)
+            image = self.URL + "/location/{0}/photo?time={1}".format(location_id, time.time())
 
             response = "<b>Gevonden</b>: {0} ({1})\n".format(item['name'], item['description'])
             response += "<b>Locatie</b>: {0}".format(item['location_description'])
-            break
         else:
             response = "Helaas, niets gevonden!"
 
@@ -38,7 +40,7 @@ class InventoryHandler:
         results = []
         for item in items:
             location_id = item['location_id']
-            image = self.URL + "/location/{0}/photo".format(location_id)
+            image = self.URL + "/location/{0}/photo?time={1}".format(location_id, time.time())
 
             results.append((item['name'], item['description'], item['location'], image))
 
