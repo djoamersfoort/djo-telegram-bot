@@ -3,12 +3,12 @@
 from uuid import uuid4
 from telegram.ext import Updater, InlineQueryHandler, CommandHandler, MessageHandler, Filters
 from telegram import ParseMode, InlineQueryResultPhoto
+from telegram.error import Unauthorized, TelegramError
 from util.filehandler import FileHandler
 from util.database import DatabaseHandler
 from util.processing import BatchProcess
 from util.feedhandler import FeedHandler
 from util.inventoryhandler import InventoryHandler
-from telegram.utils.helpers import escape_markdown
 
 
 class RobotRss(object):
@@ -176,8 +176,9 @@ class RobotRss(object):
                 update.message.reply_text(message, parse_mode=ParseMode.HTML)
             except Unauthorized:
                 self.db.update_user(telegram_id=telegram_user.id, is_active=0)
-            except TelegramError:
+            except TelegramError as e:
                 # handle all other telegram related errors
+                print("Telegram error: {0}".format(e.message))
                 pass
 
     def remove(self, bot, update, args):
