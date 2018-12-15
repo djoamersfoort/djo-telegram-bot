@@ -35,7 +35,6 @@ class InventoryHandler:
             return False # dit zou beter kunnen. exception?
 
         items = result.json()['items']
-        image = None
 
         results = []
         for item in items:

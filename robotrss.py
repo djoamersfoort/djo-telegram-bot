@@ -63,13 +63,14 @@ class RobotRss(object):
                 id=uuid4(),
                 title=result[0],
                 description=result[1],
-                caption="<b>Voorwerp</b>: {}\n<b>Bescrijving: {}</b>\n<b>Locatie:</b> {}".format(result[0], result[1], result[2]),
+                caption="<b>Voorwerp</b>: {}\n<b>Beschrijving: {}</b>\n<b>Locatie:</b> {}".format(result[0], result[1], result[2]),
                 parse_mode="HTML",
                 photo_url=result[3],
                 thumb_url=result[3])
             queryresults.append(queryresult)
 
         update.inline_query.answer(queryresults)
+
     def start(self, bot, update):
         """
         Send a message when the command /start is issued.
