@@ -1,14 +1,14 @@
 # /bin/bash/python
 # encoding: utf-8
-
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-from telegram import ParseMode
+from uuid import uuid4
+from telegram.ext import Updater, InlineQueryHandler, CommandHandler, MessageHandler, Filters
+from telegram import ParseMode, InlineQueryResultPhoto
 from util.filehandler import FileHandler
 from util.database import DatabaseHandler
 from util.processing import BatchProcess
 from util.feedhandler import FeedHandler
 from util.inventoryhandler import InventoryHandler
-
+from telegram.utils.helpers import escape_markdown
 
 class RobotRss(object):
 
@@ -36,7 +36,7 @@ class RobotRss(object):
         self._addCommand(CommandHandler("search", self.inventory_search, pass_args=True))
         self._addCommand(MessageHandler(Filters.text, self.vechten))
         self._addCommand(MessageHandler(Filters.command, self.unknown))
-
+        self._addCommand(InlineQueryHandler(self.inlinequery))
         # Start the Bot
         self.processing = BatchProcess(
             database=self.db, update_interval=update_interval, bot=self.dispatcher.bot)
@@ -52,6 +52,27 @@ class RobotRss(object):
 
         self.updater.dispatcher.add_handler(command)
 
+    def inlinequery(self, bot, update):
+        query = update.inline_query.query
+        print(query)
+        searchresults = self.inventory.search_many(query)
+        print(searchresults)
+        queryresults = []
+        try:
+            for result in searchresults:
+                queryresult = InlineQueryResultPhoto(
+                    id=uuid4(),
+                    title=result[0],
+                    description=result[1],
+                    caption="<b>Voorwerp</b>: {}\n<b>Bescrijving: {}</b>\n<b>Locatie:</b> {}".format(result[0], result[1], result[2]),
+                    parse_mode="HTML",
+                    photo_url=result[3],
+                    thumb_url=result[3])
+                queryresults.append(queryresult)
+
+            update.inline_query.answer(queryresults)
+        except Exception as e:
+            print(str(e))
     def start(self, bot, update):
         """
         Send a message when the command /start is issued.
