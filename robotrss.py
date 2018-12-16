@@ -35,7 +35,7 @@ class RobotRss(object):
         self._addCommand(CommandHandler("remove", self.remove, pass_args=True))
         self._addCommand(CommandHandler("addgroup", self.add_group, pass_args=True))
         self._addCommand(CommandHandler("search", self.inventory_search, pass_args=True))
-        self._addCommand(MessageHandler(Filters.text, self.vechten))
+        self._addCommand(MessageHandler(Filters.text, self.textMessage))
         self._addCommand(MessageHandler(Filters.command, self.unknown))
         self._addCommand(InlineQueryHandler(self.inlinequery))
         # Start the Bot
@@ -310,10 +310,13 @@ class RobotRss(object):
         else:
             update.message.reply_text(text, quote=False, parse_mode=ParseMode.HTML)
 
-    def vechten(self, bot, update):
+    def textMessage(self, bot, update):
         if "kom vechten" in update.message.text.lower():
             print("Iemand wil vechten")
             update.message.reply_document('https://i.kym-cdn.com/photos/images/original/001/356/324/914.gif')
+        if "joch" in update.message.text.lower():
+            message = "je bent zelf een joch"
+            update.message.reply_text(message)
 
     def unknown(self, bot, update):
         message = "Computer says no"
