@@ -26,6 +26,7 @@ class InventoryHandler:
             response += "<b>Locatie</b>: {0}".format(item['location_description'])
             if len(item['properties']) > 0:
                 response += "\n<b>Eigenschappen</b>: {0}".format(', '.join(item['properties']))
+            print(response)
         else:
             response = "Helaas, niets gevonden!"
 
