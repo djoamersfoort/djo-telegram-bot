@@ -3,7 +3,7 @@ import time
 
 
 class InventoryHandler:
-    URL = 'https://djoinventory.rmoesbergen.nl/api/v1'
+    URL = 'https://inventory.djoamersfoort.nl/api/v1'
 
     def __init__(self):
         pass
