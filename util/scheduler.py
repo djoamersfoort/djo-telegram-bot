@@ -15,8 +15,7 @@ class Scheduler(threading.Thread):
     def run(self):
         while self.running:
             dt = datetime.datetime.now()
-            if (dt.hour == 21 or dt.hour == 22) and dt.minute % 5 == 0 and dt.weekday() == 4:
-                print("Schedule!!")
+            if (dt.hour == 19) and dt.minute == 30 and dt.weekday() == 3:
                 self.send_free_member_slots()
             sleep(60)
 
@@ -29,7 +28,7 @@ class Scheduler(threading.Thread):
 
         if response.ok:
             slots = response.json()
-            message = f"Er zijn op vrijdag nog {slots['friday']} plekken vrij en op zaterdag nog {slots['saturday']}. Schrijf je snel in!"
+            message = f"Er zijn op vrijdag nog {slots['friday']} plekken vrij en op zaterdag nog {slots['saturday']}. Vergeet je niet aan te melden!"
             try:
                 self.bot.send_message(chat_id='@Moes17', text=message)
             except Exception as e:
