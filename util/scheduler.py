@@ -15,7 +15,7 @@ class Scheduler(threading.Thread):
     def run(self):
         while self.running:
             dt = datetime.datetime.now()
-            if (dt.hour == 19) and dt.minute == 30 and dt.weekday() == 3:
+            if dt.hour == 19 and dt.minute == 30 and dt.weekday() == 3:
                 self.send_free_member_slots()
             sleep(60)
 
