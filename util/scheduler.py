@@ -2,21 +2,21 @@ import threading
 import datetime
 import requests
 from time import sleep
-from telegram import ParseMode
 import traceback
 
 
 class Scheduler(threading.Thread):
 
     def __init__(self, bot):
-        super().__init__()
+        threading.Thread.__init__(self)
         self.bot = bot
         self.running = True
 
     def run(self):
         while self.running:
             dt = datetime.datetime.now()
-            if dt.hour == 21 and dt.minute % 5 == 0 and dt.weekday() == 4:
+            if (dt.hour == 21 or dt.hour == 22) and dt.minute % 5 == 0 and dt.weekday() == 4:
+                print("Schedule!!")
                 self.send_free_member_slots()
             sleep(60)
 
