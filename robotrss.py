@@ -9,6 +9,7 @@ from util.database import DatabaseHandler
 from util.processing import BatchProcess
 from util.feedhandler import FeedHandler
 from util.inventoryhandler import InventoryHandler
+from util.scheduler import Scheduler
 
 
 class RobotRss(object):
@@ -41,8 +42,10 @@ class RobotRss(object):
         # Start the Bot
         self.processing = BatchProcess(
             database=self.db, update_interval=update_interval, bot=self.dispatcher.bot)
+        self.scheduler = Scheduler(bot=self.dispatcher.bot)
 
         self.processing.start()
+        self.scheduler.start()
         self.updater.start_polling()
         self.updater.idle()
 

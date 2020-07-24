@@ -1,11 +1,11 @@
-# /bin/bash/python/
+#!/usr/bin/env python3
+#
 
 from telegram.error import (TelegramError, Unauthorized)
 from telegram import ParseMode
 from multiprocessing.dummy import Pool as ThreadPool
 from threading import Thread as RunningThread
 from util.datehandler import DateHandler
-from util.database import DatabaseHandler
 from util.feedhandler import FeedHandler
 import datetime
 import threading

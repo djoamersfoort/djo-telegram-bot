@@ -15,7 +15,7 @@ class DateHandler:
 
         # Make datetime aware of timezone
         aware_date = pytz.utc.localize(naive_date)
-        result = aware_date.astimezone(pytz.timezone("Europe/Berlin"))
+        result = aware_date.astimezone(pytz.timezone("Europe/Amsterdam"))
         return result
 
     @staticmethod
@@ -24,6 +24,6 @@ class DateHandler:
 
         if result.tzinfo is None:
             aware_date = pytz.utc.localize(result)
-            result = aware_date.astimezone(pytz.timezone("Europe/Berlin"))
+            result = aware_date.astimezone(pytz.timezone("Europe/Amsterdam"))
 
         return result
