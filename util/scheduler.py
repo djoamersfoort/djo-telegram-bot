@@ -28,9 +28,17 @@ class Scheduler(threading.Thread):
 
         if response.ok:
             slots = response.json()
-            message = f"Er zijn op vrijdag nog {slots['friday']} plekken vrij en op zaterdag nog {slots['saturday']}. Vergeet je niet aan te melden!"
-            try:
-                self.bot.send_message(chat_id='@DJOAmersfoort', text=message)
-            except Exception as e:
-                traceback.print_exc()
-                pass
+            message = ''
+            if slots['friday'] > 0 and slots['saturday'] > 0:
+                message = f"Er zijn op vrijdag nog {slots['friday']} plekken vrij en op zaterdag nog {slots['saturday']}. Vergeet je niet aan te melden!"
+            elif slots['friday'] > 0:
+                message = f"Er zijn op vrijdag nog {slots['friday']} plekken vrij. Vergeet je niet aan te melden!"
+            elif slots['saturday'] > 0:
+                message = f"Er zijn op zaterdag nog {slots['saturday']} plekken vrij. Vergeet je niet aan te melden!"
+
+            if message != '':
+                try:
+                    self.bot.send_message(chat_id='@DJOAmersfoort', text=message)
+                except Exception as e:
+                    traceback.print_exc()
+                    pass
