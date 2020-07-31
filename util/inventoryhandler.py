@@ -22,6 +22,12 @@ class InventoryHandler:
             location_id = item['location_id']
             image = self.URL + "/location/{0}/photo?time={1}".format(location_id, time.time())
 
+            # Check if the image actually exists, telegram can't handle non-existant images and will not send
+            # a reply
+            image_response = requests.get(image)
+            if not image_response.ok:
+                image = None
+
             response = "<b>Gevonden</b>: {0} ({1})\n".format(item['name'], item['description'])
             response += "<b>Locatie</b>: {0}".format(item['location_description'])
             if len(item['properties']) > 0:
