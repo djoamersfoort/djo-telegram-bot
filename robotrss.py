@@ -247,7 +247,7 @@ class RobotRss(object):
                   "/list: Geef een lijst van feeds\n" \
                   "/add <url> <naam>: Voeg een nieuwe feed toe\n" \
                   "/addgroup <url> <@grouphandle>\n" \
-                  "/search <keyword>: Zoek in de DJO inventaris" \
+                  "/search <keyword>: Zoek in de DJO inventaris\n" \
                   "/aanmeld_status: Rapporteer de aanmeld status in de DJO chat"
         update.message.reply_text(message)
 
