@@ -7,7 +7,6 @@ from multiprocessing.dummy import Pool as ThreadPool
 from threading import Thread as RunningThread
 from util.datehandler import DateHandler
 from util.feedhandler import FeedHandler
-import datetime
 import threading
 import traceback
 from time import sleep
@@ -36,23 +35,15 @@ class BatchProcess(threading.Thread):
             sleep(self.update_interval)
 
     def parse_parallel(self, queue, threads):
-        time_started = datetime.datetime.now()
-
         pool = ThreadPool(threads)
         pool.map(self.update_feed, queue)
         pool.close()
         pool.join()
 
-        time_ended = datetime.datetime.now()
-        duration = time_ended - time_started
-        print("Finished updating! Parsed " + str(len(queue)) +
-              " rss feeds in " + str(duration) + " !")
-
     def update_feed(self, url):
         telegram_users = self.db.get_users_for_url(url=url[0])
         telegram_channels = self.db.get_channels_for_url(url=url[0])
 
-        print("Processing url: {0}".format(url[0]))
         try:
             posts = FeedHandler.parse_feed(url[0])
         except ValueError:
@@ -60,7 +51,6 @@ class BatchProcess(threading.Thread):
             return
 
         for post in posts:
-            print("Processing post: {0}".format(post.id))
             for user in telegram_users:
                 if user[6]:  # is_active
                     self.send_newest_messages(url=url, post=post, user=user)

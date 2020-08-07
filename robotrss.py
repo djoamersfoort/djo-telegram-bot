@@ -36,6 +36,7 @@ class RobotRss(object):
         self._addCommand(CommandHandler("remove", self.remove, pass_args=True))
         self._addCommand(CommandHandler("addgroup", self.add_group, pass_args=True))
         self._addCommand(CommandHandler("search", self.inventory_search, pass_args=True))
+        self._addCommand(CommandHandler("aanmeld_status", self.aanmeld_status, pass_args=True))
         self._addCommand(MessageHandler(Filters.text, self.textMessage))
         self._addCommand(MessageHandler(Filters.command, self.unknown))
         self._addCommand(InlineQueryHandler(self.inlinequery))
@@ -246,7 +247,8 @@ class RobotRss(object):
                   "/list: Geef een lijst van feeds\n" \
                   "/add <url> <naam>: Voeg een nieuwe feed toe\n" \
                   "/addgroup <url> <@grouphandle>\n" \
-                  "/search <keyword>: Zoek in de DJO inventaris"
+                  "/search <keyword>: Zoek in de DJO inventaris" \
+                  "/aanmeld_status: Rapporteer de aanmeld status in de DJO chat"
         update.message.reply_text(message)
 
     def stop(self, bot, update):
@@ -312,6 +314,9 @@ class RobotRss(object):
             update.message.reply_photo(image, quote=False, caption=text, parse_mode=ParseMode.HTML)
         else:
             update.message.reply_text(text, quote=False, parse_mode=ParseMode.HTML)
+
+    def aanmeld_status(self, bot, update, args):
+        self.scheduler.send_free_member_slots()
 
     def textMessage(self, bot, update):
         if "kom vechten" in update.message.text.lower():
