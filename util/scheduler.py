@@ -24,12 +24,7 @@ class Scheduler(threading.Thread):
                 pass
 
     def send_free_member_slots(self):
-        try:
-            response = requests.get('https://aanmelden.djoamersfoort.nl/api/v1/free')
-        except Exception as e:
-            traceback.print_exc()
-            return
-
+        response = requests.get('https://aanmelden.djoamersfoort.nl/api/v1/free')
         if not response.ok:
             print(response.content)
             return
@@ -44,8 +39,4 @@ class Scheduler(threading.Thread):
             message = f"Er zijn op zaterdag nog {slots['saturday']} plekken vrij. Vergeet je niet aan te melden!"
 
         if message != '':
-            try:
-                self.bot.send_message(chat_id='@DJOAmersfoort', text=message)
-            except Exception as e:
-                traceback.print_exc()
-                pass
+            self.bot.send_message(chat_id='@DJOAmersfoort', text=message)
