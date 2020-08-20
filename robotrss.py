@@ -316,6 +316,8 @@ class RobotRss(object):
             update.message.reply_text(text, quote=False, parse_mode=ParseMode.HTML)
 
     def aanmeld_status(self, bot, update, args):
+        sender = update.message.from_user
+        print(f"Aanmeld status called by: {sender.id}, {sender.username}, {sender.first_name}, {sender.last_name}")
         self.scheduler.send_free_member_slots()
 
     def textMessage(self, bot, update):
