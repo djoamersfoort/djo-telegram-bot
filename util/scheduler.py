@@ -3,6 +3,7 @@ import datetime
 import requests
 from time import sleep
 import traceback
+from telegram import ParseMode
 
 
 class Scheduler(threading.Thread):
@@ -31,12 +32,14 @@ class Scheduler(threading.Thread):
 
         slots = response.json()
         message = ''
+        link = '<a href="https://aanmelden.djoamersfoort.nl/">aan te melden</a>'
         if slots['friday'] > 0 and slots['saturday'] > 0:
-            message = f"Er zijn op vrijdag nog {slots['friday']} plekken vrij en op zaterdag nog {slots['saturday']}. Vergeet je niet aan te melden!"
+            message = f"Er zijn op vrijdag nog {slots['friday']} plekken vrij en op zaterdag nog {slots['saturday']}. Vergeet je niet {link}!"
         elif slots['friday'] > 0:
-            message = f"Er zijn op vrijdag nog {slots['friday']} plekken vrij. Vergeet je niet aan te melden!"
+            message = f"Er zijn op vrijdag nog {slots['friday']} plekken vrij. Vergeet je niet {link}!"
         elif slots['saturday'] > 0:
-            message = f"Er zijn op zaterdag nog {slots['saturday']} plekken vrij. Vergeet je niet aan te melden!"
+            message = f"Er zijn op zaterdag nog {slots['saturday']} plekken vrij. Vergeet je niet {link}!"
 
         if message != '':
-            self.bot.send_message(chat_id='@DJOAmersfoort', text=message)
+            self.bot.send_message(chat_id='@DJOAmersfoort', text=message, parse_mode=ParseMode.HTML,
+                                  disable_web_page_preview=True)
