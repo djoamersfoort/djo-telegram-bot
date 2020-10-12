@@ -320,6 +320,8 @@ class RobotRss(object):
         print(f"Aanmeld status called by: {sender.id}, {sender.username}, {sender.first_name}, {sender.last_name}")
         if sender.id == 517935455:
             self.scheduler.send_free_member_slots()
+        else:
+            update.message.reply_text("Stout!")
 
     def textMessage(self, bot, update):
         if "kom vechten" in update.message.text.lower():
